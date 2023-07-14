@@ -7,6 +7,6 @@ var Module = fx.Options(
         NewDB,
         NewEnv,
         NewRequestHandler,
-        NewRabbitMQ,
+        NewAMQP,
         ),
 )

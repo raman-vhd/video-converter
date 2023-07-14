@@ -11,12 +11,12 @@ type ITemplateService interface{
 
 type templateService struct {
     repo repository.ITemplateRepository
-    amqp *lib.RabbitMQ
+    amqp *lib.AMQP
 }
 
 func NewTemplate(
     repo repository.ITemplateRepository,
-    amqp *lib.RabbitMQ,
+    amqp *lib.AMQP,
 ) ITemplateService{
     return templateService{
         repo: repo,

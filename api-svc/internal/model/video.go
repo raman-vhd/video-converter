@@ -1,0 +1,18 @@
+package model
+
+type Video struct {
+    VideoID     string           `json:"video_id"`
+    Ext         string           `json:"ext"`
+    Size        int              `json:"size"`
+    Versions    map[string]ConvertedVideo `json:"versions"`
+}
+
+type ConvertedVideo struct {
+    Size  int    `json:"size"`
+    State string `json:"state"`
+}
+
+type AMQPMsg struct {
+    VideoID string `json:"videoid"`
+    Format  string
+}

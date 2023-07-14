@@ -5,6 +5,7 @@ import "go.uber.org/fx"
 var Module = fx.Options(
     fx.Provide(
         NewTemplate,
+        NewVideo,
         ),
     fx.Provide(NewRoutes),
 )
@@ -17,9 +18,11 @@ type Route interface {
 
 func NewRoutes(
     template templateRoute ,
+    video videoRoute,
 ) Routes {
     return Routes{
         template,
+        video,
     }
 }
 
