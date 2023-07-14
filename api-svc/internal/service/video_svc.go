@@ -12,7 +12,7 @@ import (
 	"github.com/raman-vhd/video-converter/internal/util"
 )
 
-var formatList = []string{"144", "240", "360", "480", "720", "1080"}
+var qualityList = []string{"144", "240", "360", "480", "720", "1080"}
 
 type IVideoService interface{
     CreateVideo(ctx context.Context, file io.Reader, ext string, formats []string) (string, error)
@@ -37,7 +37,7 @@ func NewVideo(
     }
 }
 
-func (s videoService) CreateVideo(ctx context.Context, reader io.Reader, ext string, formats []string) (string, error) {
+func (s videoService) CreateVideo(ctx context.Context, reader io.Reader, ext string, quality []string) (string, error) {
     videoID := util.GenerateLink(10)
     filePath := s.env.VideoDir + videoID + ext
 	file, err := os.Create(filePath)
@@ -60,10 +60,10 @@ func (s videoService) CreateVideo(ctx context.Context, reader io.Reader, ext str
         return "", err
     }
 
-    for _, f := range formats {
+    for _, q := range quality {
         var ok bool
-        for _, i := range formatList {
-            if i == f {
+        for _, i := range qualityList {
+            if i == q {
                 ok = true
                 break
             }
@@ -73,7 +73,8 @@ func (s videoService) CreateVideo(ctx context.Context, reader io.Reader, ext str
         }
         msg := model.AMQPMsg{
             VideoID: videoID,
-            Format: f,
+            Quality: q,
+            Ext: ext,
         }
         msgRaw, err := json.Marshal(msg)
         if err != nil {
@@ -85,7 +86,7 @@ func (s videoService) CreateVideo(ctx context.Context, reader io.Reader, ext str
             return "", err
         }
         
-        err = s.repo.AddVersion(ctx, videoID, f)
+        err = s.repo.AddVersion(ctx, videoID, q)
         if err != nil {
             return "", err
         }

@@ -51,11 +51,11 @@ func (c videoController) CreateVideo(ctx echo.Context) error {
         }) 
     }
     
-    formats := ctx.FormValue("formats")
-    formatList := strings.Split(formats, ",")
+    quality := ctx.FormValue("quality")
+    qualityList := strings.Split(quality, ",")
     
     file.Seek(0,io.SeekStart)
-    link, err := c.svc.CreateVideo(ctx.Request().Context(), file, ext, formatList)
+    link, err := c.svc.CreateVideo(ctx.Request().Context(), file, ext, qualityList)
     if err != nil {
         log.Println(err)
         return ctx.JSON(http.StatusInternalServerError, echo.Map{
@@ -66,7 +66,7 @@ func (c videoController) CreateVideo(ctx echo.Context) error {
     
     return ctx.JSON(http.StatusOK, echo.Map{
         "message": "video created successfully",
-        "formats": formatList,
+        "versions": qualityList,
         "link": link,
     })
 }

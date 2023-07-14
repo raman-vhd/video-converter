@@ -10,7 +10,7 @@ import (
 
 type IVideoRepository interface{
     CreateVideo(ctx context.Context, videoID string, ext string, size int) error
-    AddVersion(ctx context.Context, videoID string, format string) error
+    AddVersion(ctx context.Context, videoID string, quality string) error
     GetVideo(ctx context.Context, videoID string) (model.Video, error)
 }
 
@@ -40,11 +40,11 @@ func (r videoRepository) CreateVideo(ctx context.Context, videoID string, ext st
     return nil
 }
 
-func (r videoRepository) AddVersion(ctx context.Context, videoID string, format string) error {
+func (r videoRepository) AddVersion(ctx context.Context, videoID string, quality string) error {
     _, err := r.db.UpdateOne(ctx,
         bson.M{"videoid": videoID},
         bson.M{"$set": bson.M{
-            "versions." + format + ".state": "pending",
+            "versions." + quality + ".state": "pending",
             
         }},)
     return err

@@ -13,6 +13,7 @@ type ConvertedVideo struct {
 }
 
 type AMQPMsg struct {
-    VideoID string `json:"videoid"`
-    Format  string
+    VideoID string  `json:"videoid"`
+    Quality  string `json:"quality"`
+    Ext string      `json:"ext"`
 }
