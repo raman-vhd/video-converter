@@ -12,60 +12,59 @@ import (
 	"github.com/raman-vhd/video-converter/internal/repository"
 )
 
-type IVideoService interface{
-    ConvertVideo(videoID string, quality string, ext string) error
+type IVideoService interface {
+	ConvertVideo(videoID string, quality string, ext string) error
 }
 
 type videoService struct {
-    repo repository.IVideoRepository
-    env lib.Env
+	repo repository.IVideoRepository
+	env  lib.Env
 }
 
-
 func NewVideo(
-    repo repository.IVideoRepository,
-    env lib.Env,
+	repo repository.IVideoRepository,
+	env lib.Env,
 ) IVideoService {
-    return videoService{
-        repo: repo,
-        env: env,
-    }
+	return videoService{
+		repo: repo,
+		env:  env,
+	}
 }
 
 func (s videoService) ConvertVideo(videoID string, quality string, ext string) error {
-    err := s.repo.UpdateVideoState(videoID, quality, "converting", 0)
-    if err != nil {
-        log.Printf("err: %s\n", err) 
-    }
-    
-    input := s.env.VideoDir + videoID + ext
-    output := s.env.VideoDir + videoID + "-" + quality + ext
-    
-    err = startConverting(input, output, quality)
-    if err != nil {
-        log.Printf("err: %s\n", err)
-        return err
-    }
+	err := s.repo.UpdateVideoState(videoID, quality, "converting", 0)
+	if err != nil {
+		log.Printf("err: %s\n", err)
+	}
 
-    info, err := os.Stat(output)
-    if err != nil {
-        log.Printf("err: %s\n", err)
-        return err
-    }
-    size := info.Size()
-    err = s.repo.UpdateVideoState(videoID, quality, "done", int(size))
-    if err != nil {
-        log.Printf("err: %s\n", err)
-        return err
-    }
-    return nil
+	input := s.env.VideoDir + videoID + ext
+	output := s.env.VideoDir + videoID + "-" + quality + ext
+
+	err = startConverting(input, output, quality)
+	if err != nil {
+		log.Printf("err: %s\n", err)
+		return err
+	}
+
+	info, err := os.Stat(output)
+	if err != nil {
+		log.Printf("err: %s\n", err)
+		return err
+	}
+	size := info.Size()
+	err = s.repo.UpdateVideoState(videoID, quality, "done", int(size))
+	if err != nil {
+		log.Printf("err: %s\n", err)
+		return err
+	}
+	return nil
 }
 
 func startConverting(input string, output string, quality string) error {
-    args := fmt.Sprintf("-i %v -vf scale=-2:%v %v -y", input, quality, output)
+	args := fmt.Sprintf("-i %v -vf scale=-2:%v %v -y", input, quality, output)
 	cmd := exec.Command("ffmpeg", strings.Split(args, " ")...)
 
-    err := cmd.Start()
+	err := cmd.Start()
 	if err != nil {
 		panic(err)
 	}
@@ -75,7 +74,7 @@ func startConverting(input string, output string, quality string) error {
 		log.Printf("err: %s\n", err)
 		return nil
 	}
-    return nil
+	return nil
 }
 
 func info(data string) map[string]string {

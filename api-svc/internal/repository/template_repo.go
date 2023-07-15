@@ -8,15 +8,14 @@ import (
 type ITemplateRepository interface{}
 
 type templateRepository struct {
-    db *mongo.Collection
+	db *mongo.Collection
 }
 
 func NewTemplate(
-    db lib.Database,
-) ITemplateRepository{
-    dbColletion := db.GetCollection("template")
-    return templateRepository{
-        db: dbColletion,
-    }
+	db lib.Database,
+) ITemplateRepository {
+	dbColletion := db.GetCollection("template")
+	return templateRepository{
+		db: dbColletion,
+	}
 }
-

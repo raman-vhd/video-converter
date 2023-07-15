@@ -3,31 +3,31 @@ package route
 import "go.uber.org/fx"
 
 var Module = fx.Options(
-    fx.Provide(
-        NewTemplate,
-        NewVideo,
-        ),
-    fx.Provide(NewRoutes),
+	fx.Provide(
+		NewTemplate,
+		NewVideo,
+	),
+	fx.Provide(NewRoutes),
 )
 
 type Routes []Route
 
 type Route interface {
-    Setup()
+	Setup()
 }
 
 func NewRoutes(
-    template templateRoute ,
-    video videoRoute,
+	template templateRoute,
+	video videoRoute,
 ) Routes {
-    return Routes{
-        template,
-        video,
-    }
+	return Routes{
+		template,
+		video,
+	}
 }
 
 func (r Routes) Setup() {
-    for _, route := range r {
-        route.Setup()
-    }
+	for _, route := range r {
+		route.Setup()
+	}
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func GenerateLink(length int) string {
-    bytes := make([]byte, (length+3)/4*3)
+	bytes := make([]byte, (length+3)/4*3)
 
 	// Generate random bytes
 	_, err := rand.Read(bytes)

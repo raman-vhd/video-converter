@@ -6,22 +6,22 @@ import (
 )
 
 type templateRoute struct {
-    handler lib.RequestHandler
-    ctrl controller.ITemplateController
+	handler lib.RequestHandler
+	ctrl    controller.ITemplateController
 }
 
 func NewTemplate(
-    handler lib.RequestHandler,
-    ctrl controller.ITemplateController,
-) templateRoute{
-    return templateRoute{
-        handler: handler,
-        ctrl: ctrl,
-    }
+	handler lib.RequestHandler,
+	ctrl controller.ITemplateController,
+) templateRoute {
+	return templateRoute{
+		handler: handler,
+		ctrl:    ctrl,
+	}
 }
 
 func (a templateRoute) Setup() {
-    // api := a.handler.Echo.Group("/api")
-    
-    // api.GET("/template", a.ctrl.Action)
+	// api := a.handler.Echo.Group("/api")
+
+	// api.GET("/template", a.ctrl.Action)
 }

@@ -32,9 +32,9 @@ func NewDB(env Env) Database {
 	}
 
 	log.Println("Connected to MongoDB!")
-    return Database{
-        MongoClient: client,
-    }
+	return Database{
+		MongoClient: client,
+	}
 }
 
 func (d Database) GetCollection(collectionName string) *mongo.Collection {

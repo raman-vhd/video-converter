@@ -14,15 +14,15 @@ type AMQP struct {
 func NewAMQP(env Env) (*AMQP, error) {
 	conn, err := amqp.Dial(env.AMQP)
 	if err != nil {
-        log.Fatalf("failed dialing amqp: %v\n", err)
+		log.Fatalf("failed dialing amqp: %v\n", err)
 	}
 
 	ch, err := conn.Channel()
 	if err != nil {
-        log.Fatalf("failed opening amqp channel: %v\n", err)
+		log.Fatalf("failed opening amqp channel: %v\n", err)
 	}
 
-    log.Print("connected to amqp")
+	log.Print("connected to amqp")
 
 	return &AMQP{
 		conn: conn,
@@ -46,21 +46,21 @@ func (r *AMQP) Close() error {
 }
 
 func (p *AMQP) Publish(msg []byte) error {
-    q, err := p.ch.QueueDeclare(
-        "video",
-        false,
-        false,
-        false,
-        false,
-        nil,
-        )
+	q, err := p.ch.QueueDeclare(
+		"video",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
 	if err != nil {
-        return err
+		return err
 	}
-    
+
 	err = p.ch.Publish(
-        "",
-        q.Name,
+		"",
+		q.Name,
 		false,
 		false,
 		amqp.Publishing{
@@ -69,31 +69,31 @@ func (p *AMQP) Publish(msg []byte) error {
 		},
 	)
 
-    return err
+	return err
 }
 
 func (c *AMQP) Consume() (<-chan amqp.Delivery, error) {
-    q, err := c.ch.QueueDeclare(
-        "video",
-        false,
-        false,
-        false,
-        false,
-        nil,
-        )
+	q, err := c.ch.QueueDeclare(
+		"video",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
 	if err != nil {
-        return nil, err
+		return nil, err
 	}
 
-    err = c.ch.Qos(
-        1,
-        0,
-        false,
-        )
+	err = c.ch.Qos(
+		1,
+		0,
+		false,
+	)
 	if err != nil {
-        return nil, err
+		return nil, err
 	}
-    
+
 	msgs, err := c.ch.Consume(
 		q.Name,
 		"",
