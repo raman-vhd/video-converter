@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/streadway/amqp"
@@ -12,7 +13,8 @@ type AMQP struct {
 }
 
 func NewAMQP(env Env) (*AMQP, error) {
-	conn, err := amqp.Dial(env.AMQP)
+    uri := fmt.Sprintf("amqp://%v:%v", env.AMQPHost, env.AMQPPort)
+	conn, err := amqp.Dial(uri)
 	if err != nil {
 		log.Fatalf("failed dialing amqp: %v\n", err)
 	}

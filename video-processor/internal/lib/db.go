@@ -2,6 +2,7 @@ package lib
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -16,7 +17,8 @@ type Database struct {
 }
 
 func NewDB(env Env) Database {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+    uri := fmt.Sprintf("mongodb://%v:%v", env.DBHost, env.DBPort)
+	clientOptions := options.Client().ApplyURI(uri)
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()

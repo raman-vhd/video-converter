@@ -8,15 +8,16 @@ import (
 
 type Env struct {
 	ServerPort string `mapstructure:"SERVER_PORT"`
-	DB         string `mapstructure:"DB"`
-	AMQP       string `mapstructure:"AMQP"`
 	VideoDir   string `mapstructure:"VIDEO_DIR"`
+	DBHost     string `mapstructure:"DB_HOST"`
+	DBPort     string `mapstructure:"DB_PORT"`
+	AMQPHost   string `mapstructure:"AMQP_HOST"`
+	AMQPPort   string `mapstructure:"AMQP_PORT"`
 }
 
 func NewEnv() Env {
-	var env Env
+	env := Env{}
 
-	viper.SetConfigFile("config/config.env")
 	viper.AutomaticEnv()
 
 	err := viper.ReadInConfig()
