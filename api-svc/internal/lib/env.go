@@ -1,9 +1,7 @@
 package lib
 
 import (
-	"log"
-
-	"github.com/spf13/viper"
+	"os"
 )
 
 type Env struct {
@@ -16,18 +14,13 @@ type Env struct {
 }
 
 func NewEnv() Env {
-	env := Env{}
-
-	viper.AutomaticEnv()
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Fatalf("failed to read configuration: %v\n", err)
-	}
-
-	err = viper.Unmarshal(&env)
-	if err != nil {
-		log.Fatalf("️failed to load environment variables: %v\n", err)
+	env := Env{
+		ServerPort: os.Getenv("SERVER_PORT"),
+		VideoDir:   os.Getenv("VIDEO_DIR"),
+		DBHost:     os.Getenv("MONGODB_SERVICE_HOST"),
+		DBPort:     os.Getenv("MONGODB_SERVICE_PORT"),
+		AMQPHost:   os.Getenv("RABBITMQ_SERVICE_HOST"),
+		AMQPPort:   os.Getenv("RABBITMQ_SERVICE_PORT"),
 	}
 
 	return env
