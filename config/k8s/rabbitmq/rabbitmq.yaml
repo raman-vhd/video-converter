@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  rabbitmq
+  namespace: default
+  labels:
+    app: rabbitmq
+spec:
+  selector:
+    matchLabels:
+      app: rabbitmq
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name:  rabbitmq
+        image: rabbitmq:3.9.29
+        ports:
+          - containerPort: 5672
+        volumeMounts:
+        - name: rabbitmq-data
+          mountPath: /data/rabbitmq
+      volumes:
+        - name: rabbitmq-data
+          hostPath:
+            path: /data/rabbitmq
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  namespace: default
+spec:
+  selector:
+    app: rabbitmq
+  type: ClusterIP
+  ports:
+    - port: 5672
+      targetPort: 5672
+---

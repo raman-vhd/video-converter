@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-svc
+  namespace: default
+  labels:
+    app: api-svc
+spec:
+  selector:
+    matchLabels:
+      app: api-svc
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: api-svc
+    spec:
+      containers:
+      - name:  api-svc
+        image: video-converter/api-svc:latest
+        imagePullPolicy: Never
+        env:
+          - name: SERVER_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: svc-configs
+                key: SERVER_PORT
+          - name: VIDEO_DIR
+            valueFrom:
+              configMapKeyRef:
+                name: svc-configs
+                key: VIDEO_DIR
+          - name: DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: svc-configs
+                key: DB_HOST
+          - name: DB_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: svc-configs
+                key: DB_PORT
+          - name: AMQP_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: svc-configs
+                key: AMQP_HOST
+          - name: AMQP_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: svc-configs
+                key: AMQP_PORT
+        ports:
+          - containerPort: 8080
+        volumeMounts:
+        - name: video-data
+          mountPath: /data/video
+      volumes:
+        - name: video-data
+          hostPath:
+            path: /data/video
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-svc
+spec:
+  selector:
+    app: api-svc
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+---

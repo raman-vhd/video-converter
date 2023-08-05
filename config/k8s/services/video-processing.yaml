@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vid-processing-svc
+  namespace: default
+  labels:
+    app: vid-processing-svc
+spec:
+  selector:
+    matchLabels:
+      app: vid-processing-svc
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: vid-processing-svc
+    spec:
+      containers:
+      - name:  vid-processing-svc
+        image: video-converter/vid-processing-svc:latest
+        imagePullPolicy: Never
+        resources:
+          requests:
+            cpu: 0.5
+            memory: 200Mi
+          limits:
+            cpu: 1
+            memory: 500Mi
+        env:
+          - name: SERVER_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: svc-configs
+                key: SERVER_PORT
+          - name: VIDEO_DIR
+            valueFrom:
+              configMapKeyRef:
+                name: svc-configs
+                key: VIDEO_DIR
+          - name: DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: svc-configs
+                key: DB_HOST
+          - name: DB_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: svc-configs
+                key: DB_PORT
+          - name: AMQP_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: svc-configs
+                key: AMQP_HOST
+          - name: AMQP_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: svc-configs
+                key: AMQP_PORT
+        volumeMounts:
+        - name: video-data
+          mountPath: /data/video
+      volumes:
+        - name: video-data
+          hostPath:
+            path: /data/video
